@@ -1,0 +1,15 @@
+# 请到语雀网页版，我的 -> 账户设置 -> Token -> 新建 -> 选中（读取你的知识库、读取你的文档） -> 创建 -> 复制AccessToken到此处
+# https://www.yuque.com/yuque/developer/api#785a3731
+token: your-token
+# 自定义请求头
+user_agent: "yuque-sae"
+# 超时时间，单位 秒
+timeout: 10
+# 格式化
+format:
+  # 是否启用格式化， true 或 false
+  enable: true
+  # 是否将语雀换行符 <br /> 转换为两个空格加两个回车， true 或 false
+  newline_character_convert: true
+  # 删除所有的 HTML 标签， true 或 false
+  clear_html_tag: false
