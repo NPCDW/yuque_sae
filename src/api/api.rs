@@ -13,14 +13,14 @@ fn get_client() -> reqwest::Client {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ResponseBase<T> {
-    data: T,
+    pub data: T,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserInfo {
-    id: u32,
-    login: String,
-    name: String,
+    pub id: u32,
+    pub login: String,
+    pub name: String,
 }
 
 #[tokio::main]
@@ -32,11 +32,11 @@ pub async fn get_user_info() -> Result<ResponseBase<UserInfo>, Box<dyn std::erro
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Repository {
-    id: u32,
-    name: String,
+    pub id: u32,
+    pub name: String,
     #[serde(alias = "type")]
-    type_: String,
-    namespace: String,
+    pub type_: String,
+    pub namespace: String,
 }
 
 #[tokio::main]
@@ -48,9 +48,9 @@ pub async fn get_user_repos(user_id: u32) -> Result<ResponseBase<Vec<Repository>
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Docs {
-    id: u32,
-    slug: String,
-    title: String,
+    pub id: u32,
+    pub slug: String,
+    pub title: String,
 }
 
 #[tokio::main]
@@ -62,11 +62,11 @@ pub async fn get_repos_docs(repos_id: u32) -> Result<ResponseBase<Vec<Docs>>, Bo
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Doc {
-    id: u32,
-    slug: String,
-    title: String,
-    body: String,
-    body_html: String,
+    pub id: u32,
+    pub slug: String,
+    pub title: String,
+    pub body: String,
+    pub body_html: String,
 }
 
 #[tokio::main]

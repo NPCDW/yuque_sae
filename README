@@ -1,0 +1,11 @@
+# yuque_sae
+
+语雀导出功能
+
+## 使用
+
+下载 release 程序与 config.yml 文件，将其放在同一文件夹
+
+修改 config.yml 配置
+
+在命令行中执行 yuque_sae.exe
