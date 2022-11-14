@@ -1,5 +1,6 @@
 mod config;
 mod api;
+mod format;
 #[macro_use]
 extern crate lazy_static;
 pub use crate::config::config::CONFIG;
