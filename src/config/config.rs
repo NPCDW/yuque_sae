@@ -5,6 +5,7 @@ pub struct Format {
     pub enable: bool,
     pub newline_character_convert: bool,
     pub clear_html_tag: bool,
+    pub resolve_img: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

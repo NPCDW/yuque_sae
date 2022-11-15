@@ -1,91 +1,97 @@
+use std::collections::HashMap;
 use std::ffi::OsStr;
 use std::path::Path;
-use std::{fs, fs::File};
-use std::io::{Read, Write, BufReader, BufRead};
+use std::{fs};
 use regex::Regex;
 
-pub fn code_hide(path: &Path) {
-    let text = read_file(path).unwrap();
+use super::file_util;
+
+pub fn format(path: &Path) {
+    if crate::CONFIG.format.enable == false {
+        return;
+    }
+    traversal_file(path);
+}
+
+pub fn traversal_file(path: &Path) {
+    if path.is_dir() {
+        for child in fs::read_dir(path).unwrap() {
+            let child = child.unwrap().path();
+            traversal_file(&child);
+        }
+    } else if path.extension().and_then(OsStr::to_str) == Some("md") {
+        format_md(path);
+    }
+}
+
+pub fn format_md(path: &Path) {
+    // 隐藏代码块和行内代码
+    let map = code_hide(path);
+    if crate::CONFIG.format.newline_character_convert {
+        
+    }
+    if crate::CONFIG.format.clear_html_tag {
+        
+    }
+    if crate::CONFIG.format.resolve_img {
+        resolve_img(path);
+    }
+    code_show(path, map);
+}
+
+pub fn code_hide(path: &Path) -> HashMap<String, String> {
+    let text = file_util::read_file(path).unwrap();
     let mut copy = text.clone();
+    let mut count = 1000;
+    let mut map = HashMap::default();
     let re = Regex::new(r"```((.|\n)*?)```").unwrap();
     for caps in re.captures_iter(&text) {
         let code = caps.get(1).unwrap().as_str();
         // println!("code: {}", code);
-        copy = copy.replace(&format!("```{}```", code), "<<<<<<<<<<<>>>>>>>>>>>");
-        // copy = copy.replace("<<<<<<<<<<<>>>>>>>>>>>", code);
+        let from = format!("```{}```", code);
+        let to = format!("<<<<<<<<<<<{}>>>>>>>>>>>", count);
+        copy = copy.replace(&from, &to);
+        map.insert(to, from);
+        count += 1;
     }
     let copy2 = copy.clone();
     let re = Regex::new(r"`(.*?)`").unwrap();
     for caps in re.captures_iter(&copy2) {
         let code = caps.get(1).unwrap().as_str();
-        println!("inline-code: {}", code);
-        copy = copy.replace(code, "<<<<<<<<<<<>>>>>>>>>>>");
-        // copy = copy.replace("<<<<<<<<<<<>>>>>>>>>>>", code);
+        // println!("inline-code: {}", code);
+        let from = format!("`{}`", code);
+        let to = format!("<<<<<<<<<<<{}>>>>>>>>>>>", count);
+        copy = copy.replace(&from, &to);
+        map.insert(to, from);
+        count += 1;
     }
-    let mut file = File::create(path).unwrap_or_else(|e| {
-        panic!("Could not create file: {:?}", e);
-    });
-    file.write_all(copy.as_bytes()).unwrap_or_else(|e| {
-        panic!("Write file: {:?}", e);
-    });
+    file_util::write_file(path, &copy);
+    map
 }
 
-pub fn download(path: &Path) {
-    download2(path, path.clone());
+pub fn code_show(path: &Path, map: HashMap<String, String>) {
+    let mut text = file_util::read_file(path).unwrap();
+    for (from, to) in map {
+        text = text.replace(&from, &to);
+    }
+    file_util::write_file(path, &text)
 }
 
-pub fn download2(path: &Path, path2: &Path) {
-    if path2.is_dir() {
-        for child in fs::read_dir(path2).unwrap() {
-            let child = child.unwrap().path();
-            download2(path, &child);
-        }
-    } else if path2.extension().and_then(OsStr::to_str) == Some("md") {
-        // println!("file: {}", path2.display());
-        let text = read_file(path2).unwrap();
-        let re = Regex::new(r"!\[(.*?)\]\((.*?)\)").unwrap();
-        for caps in re.captures_iter(&text) {
-            let url = caps.get(2).unwrap().as_str();
-            let name = *url.split("/").collect::<Vec<&str>>().last().unwrap().split("#").collect::<Vec<&str>>().first().unwrap();
-            // println!("name: {}, url: {}", name, url);
-            let _ = download_file(url, path.join("img").join(name).as_path());
-        }
+pub fn resolve_img(path: &Path) {
+    let text = file_util::read_file(path).unwrap();
+    let mut copy = text.clone();
+    let re = Regex::new(r"!\[(.*?)\]\((.*?)\)").unwrap();
+    for caps in re.captures_iter(&text) {
+        let url = caps.get(2).unwrap().as_str();
+        let name = *url.split("/").collect::<Vec<&str>>().last().unwrap().split("#").collect::<Vec<&str>>().first().unwrap();
+        // println!("name: {}, url: {}", name, url);
+        let filepath = path.parent().unwrap().join("upload").join("yuque_img").join(name);
+        // 下载图片
+        let _ = file_util::download_file(url, filepath.as_path());
+        // 将 url 替换成相对路径图片地址，也就是 upload/yuque_img/uuid.png
+        copy = copy.replace(url, &format!("upload/yuque_img/{}", name));
     }
-}
-
-#[tokio::main]
-pub async fn download_file(url: &str, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    let client = reqwest::Client::new();
-    let body = client.get(url).header("User-Agent", &crate::CONFIG.user_agent).send().await?
-        .bytes().await?;
-    let dir = path.parent();
-    if None != dir {
-        let dir = dir.unwrap();
-        fs::create_dir_all(dir).unwrap_or_else(|e| {
-            panic!("Could not create file directory: {}, {:?}", dir.display(), e)
-        });
-    }
-    let mut file = File::create(path).unwrap_or_else(|e| {
-        panic!("Could not create file: {:?}", e);
-    });
-    let content = body.bytes();
-    let data: Result<Vec<_>, _> = content.collect();
-    file.write_all(&data.unwrap())?;
-
-    Ok(())
-}
-
-pub fn read_file(path: &Path) -> Result<String, Box<dyn std::error::Error>> {
-    let file: File = File::open(path)?;
-    let mut res = String::default();
-    let lines = BufReader::new(file).lines();
-    for line in lines {
-        if let Ok(x) = line {
-            res.push_str(&x);
-            res.push('\n');
-        }
-    }
-    Ok(res)
+    file_util::write_file(path, &copy)
 }
 
 #[cfg(test)]
@@ -93,18 +99,13 @@ mod format_test {
     use super::*;
 
     #[test]
+    fn format_test() {
+        format(Path::new(r"D:\Temp\outline"));
+    }
+    
+    #[test]
     fn code_hide_test() {
         code_hide(Path::new(r"E:\Temp\Debian11纯命令行版本安装及后续工作 (2).md"));
-    }
-    
-    #[test]
-    fn download_test() {
-        download(Path::new(r"D:\Temp\outline"));
-    }
-    
-    #[test]
-    fn download_file_test() {
-        let _ = download_file(r"https://cdn.nlark.com/yuque/0/2022/png/87167/1656408445119-82d71d17-13fc-46c9-a251-cdd1f5d7dbb4.png#clientId=uc8d82d67-efe8-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=591&id=u1dfa441e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=886&originWidth=1761&originalType=binary&ratio=1&rotation=0&showTitle=false&size=121278&status=done&style=none&taskId=u3e074774-de4e-48cd-ac55-b8f43728545&title=&width=1174", Path::new(r"D:\Temp\outline\1.png"));
     }
     
 }
