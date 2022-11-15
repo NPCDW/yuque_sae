@@ -4,6 +4,32 @@ use std::{fs, fs::File};
 use std::io::{Read, Write, BufReader, BufRead};
 use regex::Regex;
 
+pub fn code_hide(path: &Path) {
+    let text = read_file(path).unwrap();
+    let mut copy = text.clone();
+    let re = Regex::new(r"```((.|\n)*?)```").unwrap();
+    for caps in re.captures_iter(&text) {
+        let code = caps.get(1).unwrap().as_str();
+        // println!("code: {}", code);
+        copy = copy.replace(&format!("```{}```", code), "<<<<<<<<<<<>>>>>>>>>>>");
+        // copy = copy.replace("<<<<<<<<<<<>>>>>>>>>>>", code);
+    }
+    let copy2 = copy.clone();
+    let re = Regex::new(r"`(.*?)`").unwrap();
+    for caps in re.captures_iter(&copy2) {
+        let code = caps.get(1).unwrap().as_str();
+        println!("inline-code: {}", code);
+        copy = copy.replace(code, "<<<<<<<<<<<>>>>>>>>>>>");
+        // copy = copy.replace("<<<<<<<<<<<>>>>>>>>>>>", code);
+    }
+    let mut file = File::create(path).unwrap_or_else(|e| {
+        panic!("Could not create file: {:?}", e);
+    });
+    file.write_all(copy.as_bytes()).unwrap_or_else(|e| {
+        panic!("Write file: {:?}", e);
+    });
+}
+
 pub fn download(path: &Path) {
     download2(path, path.clone());
 }
@@ -56,6 +82,7 @@ pub fn read_file(path: &Path) -> Result<String, Box<dyn std::error::Error>> {
     for line in lines {
         if let Ok(x) = line {
             res.push_str(&x);
+            res.push('\n');
         }
     }
     Ok(res)
@@ -66,13 +93,18 @@ mod format_test {
     use super::*;
 
     #[test]
+    fn code_hide_test() {
+        code_hide(Path::new(r"E:\Temp\Debian11纯命令行版本安装及后续工作 (2).md"));
+    }
+    
+    #[test]
     fn download_test() {
         download(Path::new(r"D:\Temp\outline"));
     }
     
     #[test]
     fn download_file_test() {
-        download_file(r"https://cdn.nlark.com/yuque/0/2022/png/87167/1656408445119-82d71d17-13fc-46c9-a251-cdd1f5d7dbb4.png#clientId=uc8d82d67-efe8-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=591&id=u1dfa441e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=886&originWidth=1761&originalType=binary&ratio=1&rotation=0&showTitle=false&size=121278&status=done&style=none&taskId=u3e074774-de4e-48cd-ac55-b8f43728545&title=&width=1174", Path::new(r"D:\Temp\outline\1.png"));
+        let _ = download_file(r"https://cdn.nlark.com/yuque/0/2022/png/87167/1656408445119-82d71d17-13fc-46c9-a251-cdd1f5d7dbb4.png#clientId=uc8d82d67-efe8-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=591&id=u1dfa441e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=886&originWidth=1761&originalType=binary&ratio=1&rotation=0&showTitle=false&size=121278&status=done&style=none&taskId=u3e074774-de4e-48cd-ac55-b8f43728545&title=&width=1174", Path::new(r"D:\Temp\outline\1.png"));
     }
     
 }
