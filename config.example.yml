@@ -13,7 +13,7 @@ format:
   newline_character_convert: true
   # 删除所有的 HTML 标签， true 或 false
   clear_html_tag: false
-  # 下载并替换所有的图片
+  # 下载图片并替换文档中的 url 为本地路径， true 或 false
   resolve_img: true
   # 下载图片路径，相对路径
   resolve_img_path: "uploads/yuque_img"
