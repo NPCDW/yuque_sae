@@ -5,11 +5,11 @@ token: your-token
 user_agent: "yuque-sae"
 # 超时时间，单位 秒
 timeout: 10
-# 格式化
+# 格式化 (下面的所有选项都对 代码块 和 行内代码 无效)
 format:
   # 是否启用格式化， true 或 false
   enable: true
-  # 是否将语雀换行符 <br /> 转换为两个空格加两个回车， true 或 false
+  # 将语雀换行符 <br /> 转换为两个空格加两个回车， true 或 false
   newline_character_convert: true
   # 删除所有的 HTML 标签， true 或 false
   clear_html_tag: false
