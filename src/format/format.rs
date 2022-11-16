@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 use std::ffi::OsStr;
 use std::path::Path;
-use std::{fs};
 use regex::Regex;
-
-use super::file_util;
+use crate::util::file_util;
 
 pub fn format(path: &Path) {
     if crate::CONFIG.format.enable == false {
@@ -15,8 +13,7 @@ pub fn format(path: &Path) {
 
 pub fn traversal_file(path: &Path) {
     if path.is_dir() {
-        for child in fs::read_dir(path).unwrap() {
-            let child = child.unwrap().path();
+        for child in file_util::list_dir(path) {
             traversal_file(&child);
         }
     } else if path.extension().and_then(OsStr::to_str) == Some("md") {
@@ -85,11 +82,11 @@ pub fn resolve_img(path: &Path) {
         let url = caps.get(2).unwrap().as_str();
         let name = *url.split("/").collect::<Vec<&str>>().last().unwrap().split("#").collect::<Vec<&str>>().first().unwrap();
         // println!("name: {}, url: {}", name, url);
-        let filepath = path.parent().unwrap().join("uploads/593d83c8-f4de-4599-a4e4-b5daf6bca7fe/yuque_img").join(name);
+        let filepath = path.parent().unwrap().join(&crate::CONFIG.format.resolve_img_path).join(name);
         // 下载图片
         let _ = file_util::download_file(url, filepath.as_path());
-        // 将 url 替换成相对路径图片地址，也就是 upload/yuque_img/uuid.png
-        copy = copy.replace(url, &format!("uploads/593d83c8-f4de-4599-a4e4-b5daf6bca7fe/yuque_img/{}", name));
+        // 将 url 替换成相对路径图片地址，也就是 uploads/yuque_img/uuid.png
+        copy = copy.replace(url, &format!("{}/{}", crate::CONFIG.format.resolve_img_path, name));
     }
     file_util::write_file(path, &copy)
 }

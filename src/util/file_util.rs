@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::{fs, fs::File};
 use std::io::{Read, Write, BufReader, BufRead};
 
@@ -22,6 +22,20 @@ pub fn write_file(path: &Path, text: &str) {
     file.write_all(text.as_bytes()).unwrap_or_else(|e| {
         panic!("Write file: {:?}", e);
     });
+}
+
+pub fn create_dir(path: &Path) {
+    fs::create_dir_all(path).unwrap_or_else(|e| {
+        panic!("Could not create file directory: {}, {:?}", &path.display(), e)
+    });
+}
+
+pub fn list_dir(path: &Path) -> Vec<PathBuf> {
+    let mut list = Vec::default();
+    for child in fs::read_dir(path).unwrap() {
+        list.push(child.unwrap().path());
+    }
+    list
 }
 
 #[tokio::main]

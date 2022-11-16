@@ -15,3 +15,5 @@ format:
   clear_html_tag: false
   # 下载并替换所有的图片
   resolve_img: true
+  # 下载图片路径，相对路径
+  resolve_img_path: "uploads/yuque_img"
