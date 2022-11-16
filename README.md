@@ -1,6 +1,6 @@
 # yuque_sae
 
-语雀导出以及格式化功能
+语雀导出以及格式化
 
 ## 功能
 
@@ -11,7 +11,7 @@
 
 ## 使用
 
-下载 `release` 程序与 `config.example.yml` 文件，并将其重命名为 `config.yml` 放在同一文件夹
+下载 [release](https://github.com/NPCDW/yuque_sae/releases) 程序与 `config.example.yml` 文件，并将其重命名为 `config.yml` 放在同一文件夹
 
 按照自己的需求修改 `config.yml` 配置
 
