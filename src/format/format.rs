@@ -85,11 +85,11 @@ pub fn resolve_img(path: &Path) {
         let url = caps.get(2).unwrap().as_str();
         let name = *url.split("/").collect::<Vec<&str>>().last().unwrap().split("#").collect::<Vec<&str>>().first().unwrap();
         // println!("name: {}, url: {}", name, url);
-        let filepath = path.parent().unwrap().join("upload").join("yuque_img").join(name);
+        let filepath = path.parent().unwrap().join("uploads/593d83c8-f4de-4599-a4e4-b5daf6bca7fe/yuque_img").join(name);
         // 下载图片
         let _ = file_util::download_file(url, filepath.as_path());
         // 将 url 替换成相对路径图片地址，也就是 upload/yuque_img/uuid.png
-        copy = copy.replace(url, &format!("upload/yuque_img/{}", name));
+        copy = copy.replace(url, &format!("uploads/593d83c8-f4de-4599-a4e4-b5daf6bca7fe/yuque_img/{}", name));
     }
     file_util::write_file(path, &copy)
 }
