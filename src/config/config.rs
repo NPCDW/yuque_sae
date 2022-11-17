@@ -1,20 +1,32 @@
 use serde::{Serialize, Deserialize};
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ResolveImg {
+    pub enable: bool,
+    pub img_path: String,
+    pub img_url_prefix: String,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Format {
     pub enable: bool,
     pub newline_character_convert: bool,
     pub clear_html_tag: bool,
-    pub resolve_img: bool,
-    pub resolve_img_path: String,
+    pub resolve_img: ResolveImg,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Download {
+    pub enable: bool,
+    pub token: String,
+    pub user_agent: String,
+    pub timeout: u64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    pub token: String,
-    pub user_agent: String,
-    pub timeout: u64,
+    pub download: Download,
+    pub source_path: String,
     pub format: Format,
 }
 

@@ -1,10 +1,15 @@
-# 请到语雀网页版，我的 -> 账户设置 -> Token -> 新建 -> 选中（读取你的知识库、读取你的文档） -> 创建 -> 复制AccessToken到此处
-# https://www.yuque.com/yuque/developer/api#785a3731
-token: your-token
-# 自定义请求头
-user_agent: "yuque-sae"
-# 超时时间，单位 秒
-timeout: 10
+download:
+  # 是否下载文档， true 或 false
+  enable: true
+  # 请到语雀网页版，我的 -> 账户设置 -> Token -> 新建 -> 选中（读取你的知识库、读取你的文档） -> 创建 -> 复制AccessToken到此处
+  # https://www.yuque.com/yuque/developer/api#785a3731
+  token: your-token
+  # 自定义请求头
+  user_agent: "yuque-sae"
+  # 超时时间，单位 秒
+  timeout: 10
+# 下载目录，格式化资源目录，默认程序所在目录，支持相对路径和绝对路径
+source_path: "."
 # 格式化 (下面的所有选项都对 代码块 和 行内代码 无效)
 format:
   # 是否启用格式化， true 或 false
@@ -12,8 +17,13 @@ format:
   # 将语雀换行符 <br /> 转换为两个空格加两个回车， true 或 false
   newline_character_convert: true
   # 删除所有的 HTML 标签， true 或 false
+  # HTML 标签判断标准：用 <> 包裹起来的。注意：有的 url 链接也是用 <> 包裹起来的，可能会误删，请谨慎选择
+  # https://markdown.com.cn/basic-syntax/links.html#%E7%BD%91%E5%9D%80%E5%92%8Cemail%E5%9C%B0%E5%9D%80
   clear_html_tag: false
-  # 下载图片并替换文档中的 url 为本地路径， true 或 false
-  resolve_img: true
-  # 下载图片路径，相对路径
-  resolve_img_path: "uploads/yuque_img"
+  resolve_img: 
+    # 下载图片并替换文档中的 url 为本地路径， true 或 false
+    enable: true
+    # 下载图片路径，相对路径
+    img_path: "uploads/yuque_img"
+    # 解析图片路径前缀
+    img_url_prefix: "http"

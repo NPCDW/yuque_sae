@@ -6,9 +6,9 @@ const YUQUE_BASE_URL: &str = "https://www.yuque.com/api/v2";
 
 fn get_client() -> reqwest::Client {
     let mut headers = reqwest::header::HeaderMap::new();
-    headers.insert("User-Agent", reqwest::header::HeaderValue::from_static(&crate::CONFIG.user_agent));
-    headers.insert("X-Auth-Token", reqwest::header::HeaderValue::from_static(&crate::CONFIG.token));
-    reqwest::Client::builder().default_headers(headers).timeout(Duration::from_secs(crate::CONFIG.timeout)).build().unwrap()
+    headers.insert("User-Agent", reqwest::header::HeaderValue::from_static(&crate::CONFIG.download.user_agent));
+    headers.insert("X-Auth-Token", reqwest::header::HeaderValue::from_static(&crate::CONFIG.download.token));
+    reqwest::Client::builder().default_headers(headers).timeout(Duration::from_secs(crate::CONFIG.download.timeout)).build().unwrap()
 }
 
 #[derive(Debug, Serialize, Deserialize)]

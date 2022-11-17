@@ -6,6 +6,7 @@ use crate::util::file_util;
 
 pub fn format(path: &Path) {
     if crate::CONFIG.format.enable == false {
+        println!("格式化功能被禁用");
         return;
     }
     traversal_file(path);
@@ -31,7 +32,7 @@ pub fn format_md(path: &Path) {
     if crate::CONFIG.format.clear_html_tag {
         clear_html_tag(path);
     }
-    if crate::CONFIG.format.resolve_img {
+    if crate::CONFIG.format.resolve_img.enable {
         resolve_img(path);
     }
     code_show(path, map);
@@ -98,16 +99,16 @@ pub fn resolve_img(path: &Path) {
     }
     for caps in RE.captures_iter(&text) {
         let url = caps.get(2).unwrap().as_str();
-        if !url.starts_with("http") {
+        if !url.starts_with(&crate::CONFIG.format.resolve_img.img_url_prefix) {
             continue;
         }
         let name = *url.split("/").collect::<Vec<&str>>().last().unwrap().split("#").collect::<Vec<&str>>().first().unwrap();
         // println!("name: {}, url: {}", name, url);
-        let filepath = path.parent().unwrap().join(&crate::CONFIG.format.resolve_img_path).join(name);
+        let filepath = path.parent().unwrap().join(&crate::CONFIG.format.resolve_img.img_path).join(name);
         // 下载图片
         let _ = file_util::download_file(url, filepath.as_path());
         // 将 url 替换成相对路径图片地址，也就是 uploads/yuque_img/uuid.png
-        copy = copy.replace(url, &format!("{}/{}", crate::CONFIG.format.resolve_img_path, name));
+        copy = copy.replace(url, &format!("{}/{}", crate::CONFIG.format.resolve_img.img_path, name));
     }
     file_util::write_file(path, &copy)
 }

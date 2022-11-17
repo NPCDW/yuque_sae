@@ -1,18 +1,20 @@
-use std::path::PathBuf;
+use std::path::Path;
+
 use super::api;
 use crate::util::file_util;
 
-pub fn download() -> PathBuf {
-    let root_dir = std::env::current_dir().unwrap_or_else(|e| {
-        panic!("获取程序目录失败：{:?}", e);
-    });
+pub fn download(source_path: &Path) {
+    if crate::CONFIG.download.enable == false {
+        println!("导出功能被禁用");
+        return;
+    }
 
     println!("获取用户信息...");
     let user_info = api::get_user_info().unwrap_or_else(|e| {
         panic!("获取用户信息失败：{:?}", e);
     });
 
-    let user_dir = root_dir.join(user_info.data.login);
+    let user_dir = source_path.join(user_info.data.login);
     file_util::create_dir(&user_dir);
 
     println!("获取用户知识库...");
@@ -42,5 +44,4 @@ pub fn download() -> PathBuf {
             file_util::write_file(&doc_path, &doc.body);
         }
     }
-    user_dir
 }

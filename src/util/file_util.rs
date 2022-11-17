@@ -41,7 +41,7 @@ pub fn list_dir(path: &Path) -> Vec<PathBuf> {
 #[tokio::main]
 pub async fn download_file(url: &str, path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
-    let body = client.get(url).header("User-Agent", &crate::CONFIG.user_agent).send().await?
+    let body = client.get(url).header("User-Agent", &crate::CONFIG.download.user_agent).send().await?
         .bytes().await?;
     let dir = path.parent();
     if None != dir {
