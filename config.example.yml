@@ -27,3 +27,5 @@ format:
     img_path: "uploads/yuque_img"
     # 解析图片路径前缀
     img_url_prefix: "http"
+    # 替换文档中的 url 路径为本地相对路径， true 或 false
+    replace_url_to_local: true

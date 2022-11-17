@@ -108,7 +108,9 @@ pub fn resolve_img(path: &Path) {
         // 下载图片
         let _ = file_util::download_file(url, filepath.as_path());
         // 将 url 替换成相对路径图片地址，也就是 uploads/yuque_img/uuid.png
-        copy = copy.replace(url, &format!("{}/{}", crate::CONFIG.format.resolve_img.img_path, name));
+        if crate::CONFIG.format.resolve_img.replace_url_to_local {
+            copy = copy.replace(url, &format!("{}/{}", crate::CONFIG.format.resolve_img.img_path, name));
+        }
     }
     file_util::write_file(path, &copy)
 }

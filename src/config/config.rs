@@ -5,6 +5,7 @@ pub struct ResolveImg {
     pub enable: bool,
     pub img_path: String,
     pub img_url_prefix: String,
+    pub replace_url_to_local: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
