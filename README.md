@@ -20,6 +20,11 @@
 ```
 yuque_sae.exe
 ```
+执行与执行完成如下图：
+
+![image](https://user-images.githubusercontent.com/32638459/202380837-b73eb31d-f5d7-40a0-b67b-54589593cfa8.png)
+
+![image](https://user-images.githubusercontent.com/32638459/202380897-98c008c2-cecf-4a69-be56-0e7b57fc6606.png)
 
 ## 吐槽
 
