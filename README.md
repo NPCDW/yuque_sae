@@ -19,7 +19,7 @@
 
 下载 [release](https://github.com/NPCDW/yuque_sae/releases) 程序与 `config.example.yml` 文件，并将其重命名为 `config.yml` 放在同一文件夹
 
-按照自己的需求修改 `config.yml` 配置
+按照自己的需求修改 `config.yml` 配置，如果需要导出语雀空间数据，获取语雀空间的 `cookie` 和 `x-crsf-token` 值，详见下图
 
 打开命令行，在命令行中执行
 
@@ -31,6 +31,10 @@ yuque_sae.exe
 ![image](https://user-images.githubusercontent.com/32638459/202380837-b73eb31d-f5d7-40a0-b67b-54589593cfa8.png)
 
 ![image](https://user-images.githubusercontent.com/32638459/202380897-98c008c2-cecf-4a69-be56-0e7b57fc6606.png)
+
+获取语雀空间的 `cookie` 和 `x-crsf-token` 值
+
+![image](https://user-images.githubusercontent.com/32638459/212895811-187979e7-be95-46df-a4a7-545e37935e4d.png)
 
 ## 吐槽
 
