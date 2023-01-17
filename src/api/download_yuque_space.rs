@@ -1,26 +1,21 @@
 use std::path::Path;
+use substring::Substring;
 
-use super::api;
+use super::space_api;
 use crate::util::file_util;
 
 pub fn download(source_path: &Path) {
     if crate::CONFIG.download.person.enable == false {
-        println!("语雀个人版导出功能未启用");
+        println!("语雀空间版导出功能未启用");
         return;
     }
 
-    println!("语雀个人版导出...");
-    println!("获取用户信息...");
-    let user_info = api::get_user_info().unwrap_or_else(|e| {
-        panic!("获取用户信息失败：{:?}", e);
-    });
+    println!("语雀空间版导出...");
+    file_util::create_dir(crate::CONFIG.download.space.domain.as_str().substring(2,5));
 
-    let user_dir = source_path.join(user_info.data.login);
-    file_util::create_dir(&user_dir);
-
-    println!("获取用户知识库...");
-    let repos_data = api::get_user_repos(user_info.data.id).unwrap_or_else(|e| {
-        panic!("获取用户知识库失败：{:?}", e);
+    println!("获取空间知识库...");
+    let repos_data = space_api::get_books().unwrap_or_else(|e| {
+        panic!("获取空间知识库失败：{:?}", e);
     });
     for repos in repos_data.data {
         if repos.type_ != "Book" {
@@ -28,10 +23,10 @@ pub fn download(source_path: &Path) {
         }
         
         println!("导出知识库 > {}", repos.name);
-        let user_repos_dir = user_dir.join(repos.name.replace("/", "-").replace("\\", "-").replace(":", "-").replace("*", "-").replace("?", "-").replace("\"", "-").replace("<", "-").replace(">", "-").replace("|", "-"));
+        let user_repos_dir = source_path.join(format!("{}/{}/{}", format_filename(repos.user.organization.name), format_filename(repos.user.name), format_filename(repos.name)));
         file_util::create_dir(&user_repos_dir);
 
-        let docs_data = api::get_repos_docs(repos.id).unwrap_or_else(|e| {
+        let docs_data = space_api::get_docs(repos.id).unwrap_or_else(|e| {
             panic!("获取知识库文档列表失败：{:?}", e);
         });
         for doc in docs_data.data {
@@ -45,4 +40,8 @@ pub fn download(source_path: &Path) {
             file_util::write_file(&doc_path, &doc.body);
         }
     }
+}
+
+fn format_filename(filename: String) -> String {
+    filename.replace("/", "-").replace("\\", "-").replace(":", "-").replace("*", "-").replace("?", "-").replace("\"", "-").replace("<", "-").replace(">", "-").replace("|", "-")
 }
