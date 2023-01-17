@@ -17,9 +17,23 @@ pub struct Format {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Download {
+pub struct Person {
     pub enable: bool,
     pub token: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Space {
+    pub enable: bool,
+    pub domain: String,
+    pub cookie: String,
+    pub x_csrf_token: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Download {
+    pub person: Person,
+    pub space: Space,
     pub user_agent: String,
     pub timeout: u64,
 }

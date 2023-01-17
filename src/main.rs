@@ -13,6 +13,7 @@ fn main() {
     let source_path = root_dir.join(&CONFIG.source_path);
 
     api::download_yuque::download(&source_path);
+    api::download_yuque_space::download(&source_path);
     format::format::format(&source_path);
     
     println!("执行完成，资源目录：{}", source_path.display());

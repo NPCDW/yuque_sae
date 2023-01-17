@@ -4,11 +4,12 @@ use super::api;
 use crate::util::file_util;
 
 pub fn download(source_path: &Path) {
-    if crate::CONFIG.download.enable == false {
-        println!("导出功能被禁用");
+    if crate::CONFIG.download.person.enable == false {
+        println!("语雀个人版导出功能未启用");
         return;
     }
 
+    println!("语雀个人版导出...");
     println!("获取用户信息...");
     let user_info = api::get_user_info().unwrap_or_else(|e| {
         panic!("获取用户信息失败：{:?}", e);

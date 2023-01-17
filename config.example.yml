@@ -1,31 +1,60 @@
 download:
-  # 是否下载文档， true 或 false
-  enable: true
-  # 请到语雀网页版，我的 -> 账户设置 -> Token -> 新建 -> 选中（读取你的知识库、读取你的文档） -> 创建 -> 复制AccessToken到此处
-  # https://www.yuque.com/yuque/developer/api#785a3731
-  token: your-token
+
+  # 语雀个人版
+  person:
+    # 是否下载文档， true 或 false
+    enable: true
+
+    # 请到语雀网页版，我的 -> 账户设置 -> Token -> 新建 -> 选中（读取你的知识库、读取你的文档） -> 创建 -> 复制AccessToken到此处，示例：5saddasdaADASDASA5151512SDAA
+    # https://www.yuque.com/yuque/developer/api#785a3731
+    token: your-token
+
+  # 语雀空间版
+  space:
+    # 是否下载文档， true 或 false
+    enable: true
+
+    # 申请时填写的域名，打开语雀空间，地址栏中可以看到
+    domain: 'https://example.yuque.com'
+
+    # 请到语雀空间网页版，按F12打开开发者工具，然后在网页上随便点一个按钮，回到开发者工具，找到标签栏的网络 -> 点击随便一条请求 -> 找到请求标头 -> 复制 cookie 和 x-csrf-token 到此处，下方只是一个示例，请覆盖它
+    # https://www.yuque.com/yuque/developer/api#785a3731
+    cookie: "lang=zh-cn; _yuque_session=sLNMDAMOMAMKJNBANNA_p-eLNKDSLKMDAOIMLTVYHBADMLMAL==; yuque_ctoken=D548-_ymdua5484sdaC_tcuS-; current_theme=dark; acw_tc=15dsadfsasdadasdsad020202dsad2asds2ad1as0d2a1d2sa5"
+    x_csrf_token: "D548-_ymdua5484sdaC_tcuS-"
+
   # 自定义请求头
   user_agent: "yuque-sae"
+
   # 超时时间，单位 秒
   timeout: 10
+
 # 下载目录，格式化资源目录，默认程序所在目录，支持相对路径和绝对路径
 source_path: "."
+
 # 格式化 (下面的所有选项都对 代码块 和 行内代码 无效)
 format:
+
   # 是否启用格式化， true 或 false
   enable: true
+
   # 将语雀换行符 <br /> 转换为两个空格加两个回车， true 或 false
   newline_character_convert: true
+
   # 删除所有的 HTML 标签， true 或 false
   # HTML 标签判断标准：用 <> 包裹起来的。注意：有的 url 链接也是用 <> 包裹起来的，可能会误删，请谨慎选择
   # https://markdown.com.cn/basic-syntax/links.html#%E7%BD%91%E5%9D%80%E5%92%8Cemail%E5%9C%B0%E5%9D%80
   clear_html_tag: false
+
   resolve_img: 
+
     # 下载图片并替换文档中的 url 为本地路径， true 或 false
     enable: true
+
     # 下载图片路径，相对路径
     img_path: "uploads/yuque_img"
+
     # 解析图片路径前缀
     img_url_prefix: "http"
+
     # 替换文档中的 url 路径为本地相对路径， true 或 false
     replace_url_to_local: true
